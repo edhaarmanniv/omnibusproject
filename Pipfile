@@ -12,6 +12,7 @@ ipykernel = "*"
 numpy = "*"
 beautifulsoup4 = "*"
 SpeechRecognition = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"
