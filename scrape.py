@@ -1,9 +1,11 @@
 from bs4 import BeautifulSoup
 import requests
+
 import re
 import datetime as dt
-
 from pprint import pprint
+from json import dump
+from collections import defaultdict
 
 class Episode:
     def __init__(episode, entry, certificate, release_date, title, mp3):
@@ -47,26 +49,25 @@ def get_certificate(desc):
     search_string = r"Certificate \#(.*)\."
     return re.search(search_string, desc).group(1)
 
-URI = "https://www.omnibusproject.com/"
-# for i in range(2):
-i=1
+if __name__ == "__main__":
 
-url = f"{URI}{str(i)}"
-soup = make_soup(url)
-ep_info = ep_info(soup)
-desc_info = desc_info(soup)
-title = get_title(ep_info)
+    episodes = defaultdict(dict)
+    URI = "https://www.omnibusproject.com/"
 
-# title = get_title(soup)
-mp3 = get_mp3(soup)
+    for i in range(2):
+        url = f"{URI}{str(i)}"
+        soup = make_soup(url)
+        
+        ep_info = ep_info(soup)
+        desc_info = desc_info(soup)
+        title = get_title(ep_info)
+        
+        episodes[i] = {"date":get_date(ep_info), "entry":get_entry(title), "title":get_title_desc(title), "certificate": get_certificate(desc_info), "mp3":get_mp3(ep_info)}
 
-# pprint(f"title: {title}")
-# pprint(f"mp3: {mp3}")
-# pprint(f"desc: {desc_info}")
+    with open("episodes.json", "w") as f:
+        dump(episodes, f)
+        
+    pprint(episodes)
 
-# pprint(get_entry(title))
-# pprint(get_certificate(desc_info))
-# pprint(get_date(ep_info))
-
-pprint(get_title_desc(title))
+        
 
