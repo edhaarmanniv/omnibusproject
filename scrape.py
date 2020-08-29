@@ -57,16 +57,16 @@ ep_info = ep_info(soup)
 desc_info = desc_info(soup)
 title = get_title(ep_info)
 
-# title = get_title(soup)
-mp3 = get_mp3(soup)
+title = get_title(ep_info)
+mp3 = get_mp3(ep_info)
 
-# pprint(f"title: {title}")
-# pprint(f"mp3: {mp3}")
-# pprint(f"desc: {desc_info}")
+pprint(f"title: {title}")
+pprint(f"mp3: {mp3}")
+pprint(f"desc: {desc_info}")
 
-# pprint(get_entry(title))
-# pprint(get_certificate(desc_info))
-# pprint(get_date(ep_info))
+pprint(get_entry(title))
+pprint(get_certificate(desc_info))
+pprint(get_date(ep_info))
 
 pprint(get_title_desc(title))
 
