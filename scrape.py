@@ -60,6 +60,7 @@ def get_entry(title):
 
 def get_certificate(desc):
     search_string = r"Certificate \#(.*)\."
+
     try:
         text = re.search(search_string, desc).group(1)[:5]
     except AttributeError:
@@ -108,3 +109,4 @@ if __name__ == "__main__":
         dump(episodes, f)
 
     pprint(episodes)
+
