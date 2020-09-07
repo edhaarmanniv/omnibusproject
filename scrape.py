@@ -21,7 +21,8 @@ class Episode:
 
 def make_soup(url):
     logger.debug("entering soup")
-    return BeautifulSoup(requests.get(url).text, "html.parser").body
+    r = requests.get(url)
+    return r.status_code, BeautifulSoup(r.text, "html.parser").body
 
 
 def get_ep_info(soup):
@@ -59,7 +60,13 @@ def get_entry(title):
 
 def get_certificate(desc):
     search_string = r"Certificate \#(.*)\."
-    return re.search(search_string, desc).group(1)
+    try:
+        text = re.search(search_string, desc).group(1)[:5]
+    except AttributeError:
+        logger.warning("Episode description missing period.")
+        search_string = r"Certificate \#(.*)"
+        text = re.search(search_string, desc).group(1)[:5]
+    return text
 
 
 if __name__ == "__main__":
@@ -69,35 +76,33 @@ if __name__ == "__main__":
     logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
     logger = logging.getLogger(__name__)
     file_handler = logging.FileHandler("scrape.log")
+    file_handler.setLevel(logging.DEBUG)
     logger.addHandler(file_handler)
 
     episodes = defaultdict(dict)
     URI = "https://www.omnibusproject.com/"
 
     episode_number = 1
-    while episode_number != 0:
-        logger.debug(episode_number)
+    while True:
         url = f"{URI}{str(episode_number)}"
-        logger.debug(url)
-        try:
-            soup = make_soup(url)
-        except:
-            episode_number = 0
-        logger.debug("leaving soup")
-        ep_info = get_ep_info(soup)
-        desc_info = get_desc_info(soup)
-        title = get_title(ep_info)
+        status_code, soup = make_soup(url)
 
-        episodes[episode_number] = {
-            "date": get_date(ep_info),
-            "entry": get_entry(title),
-            "title": get_title_desc(title),
-            "certificate": get_certificate(desc_info),
-            "mp3": get_mp3(ep_info),
-        }
+        if status_code == 200:
+            ep_info = get_ep_info(soup)
+            desc_info = get_desc_info(soup)
+            title = get_title(ep_info)
 
-        episode_number += 1
-        logger.debug("restarting loop...")
+            episodes[episode_number] = {
+                "date": get_date(ep_info),
+                "entry": get_entry(title),
+                "title": get_title_desc(title),
+                "certificate": get_certificate(desc_info),
+                "mp3": get_mp3(ep_info),
+            }
+
+            episode_number += 1
+        else:
+            break
 
     with open("episodes.json", "w") as f:
         dump(episodes, f)
