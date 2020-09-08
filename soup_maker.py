@@ -48,3 +48,20 @@ def get_certificate(desc):
         search_string = r"Certificate \#(.*)"
         text = re.search(search_string, desc).group(1)[:5]
     return text
+
+
+def all_episode_info(url):
+    soup = make_soup(url)
+
+    ep_info = get_ep_info(soup)
+    title = get_title(ep_info)
+
+    desc_info = get_desc_info(soup)
+
+    return {
+        "date": get_date(ep_info),
+        "entry": get_entry(title),
+        "title": get_title_desc(title),
+        "certificate": get_certificate(desc_info),
+        "mp3": get_mp3(ep_info),
+    }
