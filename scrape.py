@@ -1,10 +1,13 @@
+
 import datetime as dt
 import time
 import logging
+
 from pprint import pprint
 from dataclasses import dataclass
 from json import dump
 from collections import defaultdict
+
 from concurrent.futures import ThreadPoolExecutor
 
 from url_iterator import get_page_urls
