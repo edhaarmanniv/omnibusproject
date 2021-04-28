@@ -27,7 +27,7 @@ class Episode:
 if __name__ == "__main__":
 
     logging.basicConfig(
-        format="%(filename)s:%(funcName)s - %(levelname)s:%(message)s",
+        format="Thread: %(relativeCreated)6d %(threadName)s\nFunction: %(filename)s:%(funcName)s - %(levelname)s:%(message)s",
         level=logging.DEBUG,
     )
     logger = logging.getLogger(__name__)
