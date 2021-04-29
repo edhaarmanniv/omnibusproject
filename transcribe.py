@@ -18,7 +18,9 @@ print(mp3_as.channels)
 print(mp3_as.frame_rate)
 print(mp3_as.sample_width)
 print(mp3_as.max)
-print(len(mp3_as)/60000)
+print(mp3_as.duration_seconds)
+
+episode_wav = mp3_as.export("episode.wav", format="wav")
 
 # play(mp3_as)
 
